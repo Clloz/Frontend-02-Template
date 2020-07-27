@@ -1,7 +1,7 @@
 /*
  * @Author: Clloz
  * @Date: 2020-07-26 02:26:43
- * @LastEditTime: 2020-07-26 19:15:14
+ * @LastEditTime: 2020-07-27 15:58:45
  * @LastEditors: Clloz
  * @Description: parse html, build DOM tree
  * @FilePath: /toy-browser/parser.js
