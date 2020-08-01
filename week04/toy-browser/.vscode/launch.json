@@ -10,6 +10,13 @@
             "name": "Launch Program",
             "skipFiles": ["<node_internals>/**"],
             "program": "${workspaceFolder}/client.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch with node",
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "args": ["${workspaceFolder}/src/index.ts"]
         }
     ]
 }

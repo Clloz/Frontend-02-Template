@@ -1,7 +1,7 @@
 /*
  * @Author: Clloz
  * @Date: 2020-07-25 13:13:54
- * @LastEditTime: 2020-07-26 19:31:46
+ * @LastEditTime: 2020-07-29 00:35:43
  * @LastEditors: Clloz
  * @Description: toy-browser client
  * @FilePath: /toy-browser/client.js
@@ -232,5 +232,5 @@ void (async function () {
     let response = await request.send();
 
     let dom = parser.parseHTML(response.body);
-    console.log(dom);
+    console.log(dom.children);
 })();
