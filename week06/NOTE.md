@@ -8,5 +8,5 @@
 4. [选择器匹配元素](https://www.clloz.com/programming/front-end/js/2020/08/09/selector-match-element/)
 
 ### 思考题
-`first-letter` 在浏览器的渲染中还是文档流中的一个元素，而 `first-line` 并不是文档流中的一个元素。
+`first-line` 是在浏览器完成排版之后才能知道第一行对应的部分，所以会破坏当前排版的属性不能应用到上面。
 
