@@ -1,0 +1,182 @@
+<!--
+ * @Author: Clloz
+ * @Date: 2020-08-29 14:56:50
+ * @LastEditTime: 2020-08-30 18:01:24
+ * @LastEditors: Clloz
+ * @Description: the traffic-light async promise implementation
+ * @FilePath: /week09/traffic-light.html
+ * @博观而约取，厚积而薄发，日拱一卒，日进一寸，学不可以已。
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>the traffic light</title>
+        <style>
+            div {
+                display: inline-block;
+                margin: 30px;
+                height: 150px;
+                width: 150px;
+                border-radius: 75px;
+                background: gray;
+            }
+
+            #next {
+                display: inline-block;
+                width: 50px;
+                height: 35px;
+                line-height: 35px;
+                text-align: center;
+                font-size: 18px;
+                border: 1px solid black;
+                border-radius: 5px;
+                color: white;
+                background: purple;
+                cursor: pointer;
+            }
+
+            .green.light {
+                background: green;
+            }
+            .yellow.light {
+                background: yellow;
+            }
+            .red.light {
+                background: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="green"></div>
+        <div class="yellow"></div>
+        <div class="red"></div>
+        <div id="next">next</div>
+        <script>
+            function light(color) {
+                let lights = document.getElementsByTagName('div');
+                for (let i = 0; i < lights.length; i++) {
+                    lights[i].classList.remove('light');
+                }
+                document.getElementsByClassName(color)[0].classList.add('light');
+            }
+
+            //regular implementation
+            console.time('light');
+            console.timeLog('light');
+            function start() {
+                light('green');
+                setTimeout(() => {
+                    console.timeLog('light');
+                    light('yellow');
+                    setTimeout(() => {
+                        console.timeLog('light');
+                        light('red');
+                        setTimeout(() => {
+                            console.timeLog('light');
+                            start();
+                        }, 500);
+                    }, 200);
+                }, 1000);
+            }
+            //start();
+
+            //promise implementation
+            function sleep(t) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(resolve, t);
+                });
+            }
+
+            function start_promise() {
+                console.timeLog('light');
+                light('green');
+                sleep(1000)
+                    .then(() => {
+                        console.timeLog('light');
+                        light('yellow');
+                        return sleep(200);
+                    })
+                    .then(() => {
+                        console.timeLog('light');
+                        light('red');
+                        return sleep(500);
+                    })
+                    .then(start_promise);
+            }
+            //start_promise();
+
+            //async implementation
+            async function start_async() {
+                while (true) {
+                    light('green');
+                    console.timeLog('light');
+                    await sleep(1000);
+                    light('yellow');
+                    console.timeLog('light');
+                    await sleep(200);
+                    light('red');
+                    console.timeLog('light');
+                    await sleep(500);
+                }
+            }
+            //start_async()
+
+            //async manual implementation
+            function manual(el, eventName) {
+                return new Promise((resolve, reject) => {
+                    el.addEventListener(eventName, resolve, { once: true });
+                });
+            }
+
+            async function start_async_manual() {
+                let btn = document.getElementById('next');
+                while (true) {
+                    light('green');
+                    await manual(next, 'click');
+                    light('yellow');
+                    await manual(next, 'click');
+                    light('red');
+                    await manual(next, 'click');
+                }
+            }
+            //start_async_manual()
+
+            //generator implementation
+            function* start_generator() {
+                while (true) {
+                    light('green');
+                    console.timeLog('light');
+                    yield sleep(1000);
+                    light('yellow');
+                    console.timeLog('light');
+                    yield sleep(200);
+                    light('red');
+                    console.timeLog('light');
+                    yield sleep(500);
+                }
+            }
+
+            function run(iterator) {
+                let { value, done } = iterator.next();
+                if (done) {
+                    return;
+                }
+                if (value instanceof Promise) {
+                    value.then(() => {
+                        run(iterator);
+                    });
+                }
+            }
+
+            function co(generator) {
+                return function () {
+                    return run(generator());
+                };
+            }
+
+            start_generator = co(start_generator);
+            start_generator();
+        </script>
+    </body>
+</html>

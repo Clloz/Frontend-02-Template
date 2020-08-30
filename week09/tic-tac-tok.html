@@ -1,0 +1,163 @@
+<!--
+ * @Author: Clloz
+ * @Date: 2020-08-30 17:59:33
+ * @LastEditTime: 2020-08-30 21:20:19
+ * @LastEditors: Clloz
+ * @Description: tic-tac-tok
+ * @FilePath: /week09/tic-tac-tok.html
+ * @博观而约取，厚积而薄发，日拱一卒，日进一寸，学不可以已。
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>tic-tac-tok</title>
+        <style>
+            #board {
+                width: 301px;
+                font-size: 0;
+            }
+            .cell {
+                display: inline-block;
+                width: 98px;
+                height: 98px;
+                border: 1px solid white;
+                background-color: lightblue;
+                text-align: center;
+                line-height: 98px;
+                font-size: 50px;
+                vertical-align: top;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="board"></div>
+        <script>
+            let board = document.getElementById('board');
+            let cells = Array(9).fill(0);
+            let color = 1;
+
+            function init(cells) {
+                board.innerHTML = '';
+                for (let i = 0; i < cells.length; i++) {
+                    let cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.innerText = cells[i] === 1 ? '⭕️' : cells[i] === 2 ? '❌' : '';
+                    cell.addEventListener('click', () =>
+                        userMove(parseInt(i / 3), parseInt(i % 3))
+                    );
+                    board.appendChild(cell);
+                }
+            }
+
+            function userMove(x, y) {
+                //console.log(x, y);
+
+                cells[x * 3 + y] = color;
+
+                if (check(cells, color)) alert(color === 1 ? '⭕️ is winner!' : '❌ is winner!');
+                color = 3 - color;
+                console.log(cells, color);
+
+                init(cells);
+                // if (willWin(cells, color)) {
+                //     console.log(color === 1 ? '⭕️ will win!' : '❌ will win!');
+                // }
+                computerMove();
+            }
+
+            function computerMove() {
+                let point = bestChoice(cells, color).point;
+                if (point) cells[point[0] * 3 + point[1]] = color;
+                if (check(cells, color)) alert(color === 1 ? '⭕️ is winner!' : '❌ is winner!');
+                color = 3 - color;
+                init(cells);
+            }
+
+            function check(cells, color) {
+                for (let i = 0; i < 3; i++) {
+                    let win = true;
+                    for (let j = 0; j < 3; j++) {
+                        if (cells[3 * i + j] !== color) win = false;
+                    }
+                    if (win) return true;
+                }
+
+                for (let i = 0; i < 3; i++) {
+                    let win = true;
+                    for (let j = 0; j < 3; j++) {
+                        if (cells[3 * j + i] !== color) win = false;
+                    }
+                    if (win) return true;
+                }
+
+                {
+                    let win = true;
+                    for (let i = 0; i < 3; i++) {
+                        if (cells[i * 3 + i] !== color) win = false;
+                    }
+                    if (win) return true;
+                }
+                {
+                    let win = true;
+                    for (let i = 0; i < 3; i++) {
+                        if (cells[i * 3 + 2 - i] !== color) win = false;
+                    }
+                    if (win) return true;
+                }
+            }
+            init(cells);
+
+            function clone(cells) {
+                return Object.create(cells);
+            }
+
+            function willWin(cells, color) {
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        if (cells[3 * i + j]) continue;
+                        let temp = clone(cells);
+                        temp[3 * i + j] = color;
+                        if (check(temp, color)) {
+                            return [i, j];
+                        }
+                    }
+                }
+                return false;
+            }
+
+            function bestChoice(cells, color) {
+                let p;
+                let result = -2;
+                let point = null;
+                if ((p = willWin(cells, color))) {
+                    return {
+                        point: p,
+                        result: 1,
+                    };
+                }
+
+                outer: for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        if (cells[3 * i + j]) continue;
+                        let temp = clone(cells);
+                        temp[i * 3 + j] = color;
+
+                        let r = bestChoice(temp, 3 - color).result;
+
+                        if (-r > result) {
+                            result = -r;
+                            point = [i, j];
+                        }
+                        if (result === 1) break outer;
+                    }
+                }
+                return {
+                    point: point,
+                    result: point ? result : 0,
+                };
+            }
+        </script>
+    </body>
+</html>
