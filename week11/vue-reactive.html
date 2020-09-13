@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>vue-reactive</title>
+    </head>
+    <body>
+        <script>
+            let t = '';
+            let obj = {
+                a: 1,
+                b: 2,
+            };
+            let useReactives = [];
+            let callbacks = new Map();
+
+            function reactive(obj) {
+                return new Proxy(obj, {
+                    set(obj, prop, val) {
+                        console.log(obj, prop, val);
+                        console.log(callbacks);
+                        obj[prop] = val;
+                        if (callbacks.get(obj) && callbacks.get(obj).get(prop)) {
+                            for (let callback of callbacks.get(obj).get(prop)) {
+                                callback();
+                            }
+                        }
+                    },
+                    get(obj, prop) {
+                        console.log(obj, prop);
+                        useReactives.push([obj, prop]);
+                        return obj[prop];
+                    },
+                });
+            }
+            let po = reactive(obj);
+
+            function effect(callback) {
+                // callbacks.push(callback);
+                useReactives = [];
+                callback();
+                console.log(useReactives);
+
+                for (let reactive of useReactives) {
+                    if (!callbacks.has(reactive[0])) {
+                        callbacks.set(reactive[0], new Map());
+                    }
+                    if (!callbacks.get(reactive[0]).has(reactive[1])) {
+                        callbacks.get(reactive[0]).set(reactive[1], []);
+                    }
+                    callbacks.get(reactive[0]).get(reactive[1]).push(callback);
+                }
+            }
+            effect(() => {
+                // console.log(po.a);
+                po.a++;
+                // po.a = 100;
+            });
+        </script>
+    </body>
+</html>

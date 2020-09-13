@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>dragdrop</title>
+        <style>
+            .drag {
+                display: inline-block;
+                width: 100px;
+                height: 100px;
+                background-color: lightblue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字 文字文字文字文字文字文字文字文字文字
+        </div>
+        <div class="drag"></div>
+        <script>
+            let dragEl = document.querySelector('.drag');
+            let container = document.querySelector('#container');
+            let ranges = [];
+            let baseX = 0,
+                baseY = 0;
+
+            dragEl.addEventListener('mousedown', e => {
+                let startX = e.clientX,
+                    startY = e.clientY;
+
+                let move = e => {
+                    // console.log(123);
+                    // dragEl.style.transform = `translate(${baseX + e.clientX - startX}px, ${
+                    //     baseY + e.clientY - startY
+                    // }px)`;
+
+                    // console.log(min, nearest);
+
+                    let range = getNearest(e.clientX, e.clientY);
+                    range.insertNode(dragEl);
+                };
+                let up = e => {
+                    // baseX += e.clientX - startX;
+                    // baseY += e.clientY - startY;
+                    document.removeEventListener('mouseup', up);
+                    document.removeEventListener('mousemove', move);
+                };
+
+                document.addEventListener('mousemove', move);
+                document.addEventListener('mouseup', up);
+            });
+
+            for (let i = 0; i < container.childNodes.length; i++) {
+                if (container.childNodes[i].nodeType === 3 && container.childNodes[i].textContent.length > 0) {
+                    for (let k = 0; k < container.childNodes[i].textContent.length; k++) {
+                        let range = document.createRange();
+                        range.setStart(container.childNodes[i], k);
+                        range.setEnd(container.childNodes[i], k);
+                        ranges.push(range);
+                    }
+                }
+            }
+
+            function getNearest(x, y) {
+                let min = Infinity;
+                let nearest = null;
+                for (let range of ranges) {
+                    let distance =
+                        (range.getBoundingClientRect().x - x) ** 2 + (range.getBoundingClientRect().y - y) ** 2;
+                    if (distance < min) {
+                        min = distance;
+                        nearest = range;
+                    }
+                }
+                return nearest;
+            }
+            document.addEventListener('selectstart', e => e.preventDefault());
+        </script>
+    </body>
+</html>
