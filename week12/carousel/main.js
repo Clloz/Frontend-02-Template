@@ -1,13 +1,13 @@
 /*
  * @Author: Clloz
  * @Date: 2020-09-20 11:53:51
- * @LastEditTime: 2020-09-21 03:20:40
+ * @LastEditTime: 2020-09-21 03:23:17
  * @LastEditors: Clloz
  * @Description:
  * @FilePath: /carousel/main.js
  * @博观而约取，厚积而薄发，日拱一卒，日进一寸。
  */
-import { createElement, Component } from './caroucel';
+import { createElement, Component } from './framework';
 
 let imgSrc = ['./images/cat1.jpg', './images/cat2.jpg', './images/cat3.jpg', './images/cat4.jpg'];
 
