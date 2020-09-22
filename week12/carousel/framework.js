@@ -1,10 +1,10 @@
 /*
  * @Author: Clloz
  * @Date: 2020-09-20 19:23:25
- * @LastEditTime: 2020-09-20 20:23:41
+ * @LastEditTime: 2020-09-22 12:03:19
  * @LastEditors: Clloz
  * @Description:
- * @FilePath: /carousel/caroucel.js
+ * @FilePath: /carousel/framework.js
  * @博观而约取，厚积而薄发，日拱一卒，日进一寸。
  */
 export class Component {
