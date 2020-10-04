@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Gesture</title>
+    </head>
+    <body>
+        <!-- <script src="./gesture.js"></script> -->
+        <script type="module">
+            import { enableGesture } from './gesture-class.js';
+            enableGesture(document.documentElement);
+            let el = document.documentElement;
+            el.addEventListener('contextmenu', e => {
+                e.preventDefault();
+            });
+            document.documentElement.addEventListener('tap', e => {
+                console.log('tap is trigger!');
+            });
+        </script>
+    </body>
+</html>
